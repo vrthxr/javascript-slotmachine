@@ -1,3 +1,5 @@
+(!!!NOT FINISHED!!!)
+
 A JavaScript slotmachine made with a Node.js package called prompt-sync.
 
 Setup if you want to make the code by yourself:
