@@ -125,9 +125,53 @@ const printRows = (rows) => {
   }
 };
 
-let balance = deposit(); // let permite ajustar o valor da variável para no futuro adicionar e remover valor dependendo se o jogador vence ou perde
-const numberOfLines = getNumberOfLines();
-const bet = getBet(balance, numberOfLines);
-const reels = spin();
-const rows = transpose(reels);
-printRows(rows);
+// checar se o usuário venceu
+const getWinnings = (rows, bet, lines) => {
+  let winnings = 0;
+
+  for (let row = 0; row < lines; row++) {
+    const symbols = rows[row];
+    let allSame = true; // ganhou
+
+    for (const symbol of symbols) {
+      // checa se todos os símbolos são iguais ao primeiro símbolo, caso não seja, transforma a variável allSame em falsa e quebra o loop
+      if (symbol != symbols[0]) {
+        allSame = false; // não ganhou
+        break;
+      }
+    }
+
+    if (allSame) {
+      winnings += bet * SYMBOL_VALUES[symbols[0]]; //multiplicando pelo primeiro símbolo caso todos os simbolos sejam o mesmo
+    }
+  }
+
+  return winnings;
+};
+
+const game = () => {
+  let balance = deposit(); // let permite ajustar o valor da variável para no futuro adicionar e remover valor dependendo se o jogador vence ou perde
+
+  while (true) {
+    console.log("You have a balance of $" + balance);
+    const numberOfLines = getNumberOfLines();
+    const bet = getBet(balance, numberOfLines);
+    balance -= bet * numberOfLines;
+    const reels = spin();
+    const rows = transpose(reels);
+    printRows(rows);
+    const winnings = getWinnings(rows, bet, numberOfLines);
+    balance += winnings;
+    console.log("You won! $" + winnings.toString());
+
+    if (balance <= 0) {
+      console.log("You ran out of money!");
+      break;
+    }
+    const playAgain = prompt("Do you want to play again? (y/n) ");
+
+    if (playAgain != "y") break;
+  }
+};
+
+game();
